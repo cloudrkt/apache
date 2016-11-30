@@ -1,0 +1,47 @@
+# {{ ansible_managed }}
+
+{% if apache_server_global_http_ports is defined %}
+{% for listen in apache_server_global_http_ports %}
+{% if listen.port is defined %}
+{% if listen.ip is defined %}
+Listen {{ listen.ip }}:{{ listen.port }}
+{% else %}
+Listen {{ listen.port }}
+{% endif%}
+{% endif%}
+{% endfor %}
+{% else %}
+Listen 80
+{% endif%}
+
+{% if apache_server_global_https_ports is defined %}
+{% for listen in apache_server_global_https_ports %}
+{% if listen.port is defined %}
+{% if listen.ip is defined %}
+<IfModule ssl_module>
+	Listen {{ listen.ip }}:{{ listen.port }}
+</IfModule>
+
+<IfModule mod_gnutls.c>
+	Listen {{ listen.ip }}:{{ listen.port }}
+</IfModule>
+{% else %}
+<IfModule ssl_module>
+	Listen  {{ listen.port }}
+</IfModule>
+
+<IfModule mod_gnutls.c>
+	Listen {{ listen.port }}
+</IfModule>
+{% endif%}
+{% endif%}
+{% endfor %}
+{% else %}
+<IfModule ssl_module>
+	Listen  443
+</IfModule>
+
+<IfModule mod_gnutls.c>
+	Listen 443
+</IfModule>
+{% endif%}

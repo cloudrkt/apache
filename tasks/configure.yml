@@ -1,0 +1,33 @@
+---
+
+- name: configure | setup apache server configuration
+  template:
+    src: "etc/apache2/{{ item }}.j2"
+    dest: "{{ apache_server_cnf_path }}{{ item | basename | regex_replace('.j2$', '') }}"
+    backup: yes
+  with_items:
+    - "{{ apache_server_global_cnf_file_includes | default([]) }}"
+    - "apache2.conf"
+  notify:
+    - restart apache
+
+- name: configure | enable installed apache modules
+  apache2_module:
+    name: "{{ item }}"
+    state: present
+    force: yes
+  with_items:
+    - "{{ apache_server_modules_enabled }}"
+  notify:
+    - restart apache
+
+- name: configure | disable installed apache modules
+  apache2_module:
+    name: "{{ item }}"
+    state: absent
+    force: yes
+  with_items:
+    - "{{ apache_server_modules_disabled }}"
+  notify:
+    - restart apache
+

@@ -1,0 +1,24 @@
+---
+# defaults file for roles/apache
+
+apache_server_version: 2.4
+apache_server_state: "running"
+apache_server_service_name: "apache2"
+
+apache_server_update_packages: "installed"
+apache_server_additional_packages: []
+
+apache_server_modules: []
+apache_server_modules_disabled: []
+apache_server_modules_enabled: []
+
+apache_server_cnf_path: "/etc/apache2/"
+apache_server_cnf_file: "apache2.conf"
+
+apache_server_enabled_vhosts: []
+apache_server_disabled_vhosts: []
+
+apache_server_global_http_ports:
+  - port: 80
+apache_server_global_https_ports:
+  - port: 443

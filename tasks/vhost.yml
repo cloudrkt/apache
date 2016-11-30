@@ -1,0 +1,33 @@
+---
+
+- name: vhost | add apache vhosts configuration.
+  template:
+    src: "vhost.conf.j2"
+    dest: "{{ apache_server_cnf_path }}/sites-available/{{ item.vhost }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ apache_server_enabled_vhosts }}"
+
+- name:  vhost | add vhost symlink in sites-enabled.
+  file:
+    src: "{{ apache_server_cnf_path }}/sites-available/{{ item.vhost }}"
+    dest: "{{ apache_server_cnf_path }}/sites-enabled/{{ item.vhost }}"
+    state: link
+  with_items: "{{ apache_server_enabled_vhosts }}"
+  notify: 
+    - reload apache
+
+- name: vhost | remove apache vhosts configuration.
+  file:
+    dest: "{{ apache_server_cnf_path }}/sites-available/{{ item.vhost }}"
+    state: absent
+  with_items: "{{ apache_server_disabled_vhosts }}"
+
+- name:  vhost | remove vhost symlink in sites-enabled.
+  file:
+    dest: "{{ apache_server_cnf_path }}/sites-enabled/{{ item.vhost }}"
+    state: absent
+  with_items: "{{ apache_server_disabled_vhosts }}"
+  notify: 
+    - reload apache

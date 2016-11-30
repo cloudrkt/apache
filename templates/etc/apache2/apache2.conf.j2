@@ -1,0 +1,71 @@
+# {{ ansible_managed }}
+
+Mutex                {{ apache_server_global_cnf_mutex|default("file:${APACHE_LOCK_DIR}") }}
+PidFile              {{ apache_server_global_cnf_pidfile|default("${APACHE_PID_FILE}") }}
+User                 {{ apache_server_global_cnf_user|default("${APACHE_RUN_USER}") }}
+Group                {{ apache_server_global_cnf_group|default("${APACHE_RUN_GROUP}") }}
+Timeout              {{ apache_server_global_cnf_timeout|default("300") }}
+KeepAlive            {{ apache_server_global_cnf_keepalive|default("On") }}
+MaxKeepAliveRequests {{ apache_server_global_cnf_maxkeepaliverequests|default("100") }}
+KeepAliveTimeout     {{ apache_server_global_cnf_keepalivetimeout|default("5") }}
+{% if pache_server_global_cnf_servername is defined %}
+ServerName           {{ apache_server_global_cnf_servername }}
+{% endif %}
+HostnameLookups      {{ apache_server_global_cnf_hostnamelookups|default("Off") }}
+AccessFileName       {{ apache_server_global_cnf_accessfilename|default(".htaccess") }}
+
+ErrorLog             {{ apache_server_global_cnf_errorlog|default("${APACHE_LOG_DIR}/error.log") }}
+LogLevel             {{ apache_server_global_cnf_loglevel|default("warn") }}
+
+Logformat            "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+Logformat            "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combined
+Logformat            "%h %l %u %t \"%r\" %>s %O" common
+Logformat            "%{Referer}i -> %U" referer
+Logformat            "%{User-agent}i" agent
+{% if apache_server_global_cnf_logformats is defined %}
+{% for item in apache_server_global_cnf_logformats %}
+{% if item.name is defined %}
+{% if item.value is defined %}
+Logformat            {{ item.value }} {{ item.name }} 
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+Include              ports.conf
+{% if apache_server_global_cnf_file_includes is defined %}
+{% for item in apache_server_global_cnf_file_includes %}
+Include              {{ item }}
+{% endfor %}
+{% endif %}
+
+IncludeOptional      conf-enabled/*.conf
+IncludeOptional      sites-enabled/*.conf
+IncludeOptional      mods-enabled/*.load
+IncludeOptional      mods-enabled/*.conf
+{% if apache_server_global_cnf_file_includes_optional is defined %}
+{% for item in apache_server_global_cnf_file_includes_optional %}
+IncludeOptional      {{ item }}
+{% endfor %}
+{% endif %}
+
+<Directory />
+	Options FollowSymLinks
+	AllowOverride None
+	Require all denied
+</Directory>
+
+<Directory /usr/share>
+	AllowOverride None
+	Require all granted
+</Directory>
+
+<Directory /var/www/>
+	Options Indexes FollowSymLinks
+	AllowOverride None
+	Require all granted
+</Directory>
+
+<FilesMatch "^.ht">
+	Require all denied
+</FilesMatch>

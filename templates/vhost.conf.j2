@@ -1,0 +1,102 @@
+# {{ ansible_managed }}
+
+{% if item.http_listen is defined %}
+{% for listen in item.http_listen %}
+<VirtualHost {{listen.ip}}:{{listen.port}} >
+{% if item.servername is defined %} 
+    ServerName {{ item.servername }}
+{%- endif %}
+{% if item.serveralias is defined %} 
+    ServerAlias {{ item.serveralias }}
+{%- endif %}
+{% if item.serveradmin is defined %} 
+    ServerAdmin {{ item.serveradmin }}
+{%- endif %}
+{% if item.document_root is defined %} 
+    DocumentRoot {{ item.document_root }}
+{% endif %}
+{% if item.setenv is defined %} 
+{% for env in item.setenv %}
+    SetEnv {{ env.name }} "{{ env.value }}"
+{% endfor %}
+{% endif %}
+{% if item.directory is defined -%} 
+{% for directory in item.directory %}
+
+    <Directory "{{ directory.path }}">
+      {{ directory.parameters }}
+    </Directory>
+{% endfor %}
+{% endif %}
+
+{% if item.extra_http_vhost_parameters is defined %}
+    {{ item.extra_http_vhost_parameters }}
+{% endif %}
+
+</VirtualHost>
+{% endfor %}
+{% endif %}
+
+# - 
+
+{% if item.https_listen is defined %}
+{% for listen in item.https_listen %}
+<VirtualHost {{listen.ip}}:{{listen.port}} >
+{% if item.servername is defined %} 
+    ServerName {{ item.servername }}
+{%- endif %}
+{% if item.serveralias is defined %} 
+    ServerAlias {{ item.serveralias }}
+{%- endif %}
+{% if item.serveradmin is defined %} 
+    ServerAdmin {{ item.serveradmin }}
+{%- endif %}
+{% if item.document_root is defined %} 
+    DocumentRoot {{ item.document_root }}
+{% endif %}
+{% if item.setenv is defined %} 
+{% for env in item.setenv %}
+    SetEnv {{ env.name }} "{{ env.value }}"
+{% endfor %}
+{% endif %}
+{% if item.directory is defined -%} 
+{% for directory in item.directory %}
+
+    <Directory "{{ directory.path }}">
+      {{ directory.parameters }}
+    </Directory>
+{% endfor %}
+{% endif %}
+
+    SSLEngine on
+
+{% if item.sslhonorcipherorder is defined %}
+    SSLHonorCipherOrder {{ item.sslhonorcipherorder }}
+{% endif %}
+{% if item.sslciphersuite is defined %}
+    SSLCipherSuite {{ item.sslciphersuite }}
+{% endif %}
+{% if item.sslusestapling is defined %}
+    SSLUseStapling {{ item.sslusestapling }}
+{% endif %}
+{% if item.sslcompression is defined %}
+    SSLCompression {{ item.sslcompression }}
+{% endif %}
+
+{% if item.certificate_file is defined %}
+    SSLCertificateFile {{ item.certificate_file }}
+{% endif %}
+{% if item.certificate_key_file is defined %}
+    SSLCertificateKeyFile {{ item.certificate_key_file }}
+{% endif %}
+{% if item.certificate_chain_file is defined %}
+    SSLCertificateChainFile {{ item.certificate_chain_file }}
+{% endif %}
+
+{% if item.extra_https_vhost_parameters is defined %}
+    {{ item.extra_https_vhost_parameters }}
+{% endif %}
+
+</VirtualHost>
+{% endfor %}
+{% endif %}

@@ -1,0 +1,15 @@
+---
+
+- name: check | apache version support
+  fail:
+    msg: "Apache Server version {{ apache_server_version }} is not supported"
+  when: apache_server_version | string not in apache_server_versions_supported
+  tags:
+    - apache-server-version-support-check
+
+- name: check | OS version support
+  fail:
+    msg: "Operating System version {{ ansible_os_family }} is not supported"
+  when: ansible_os_family  | string not in apache_server_role_os_family_supported
+  tags:
+    - apache-server-version-support-check

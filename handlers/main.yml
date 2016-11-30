@@ -1,0 +1,14 @@
+---
+# handlers file for roles/apache
+
+- name: restart apache
+  service:
+    name: "{{ apache_server_service_name | default(apache2) }}"
+    state: restarted
+  when: apache_server_state == "running"
+
+- name: reload apache
+  service:
+    name: "{{ apache_server_service_name | default(apache2) }}"
+    state: reloaded
+  when: apache_server_state == "running"

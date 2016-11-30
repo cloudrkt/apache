@@ -1,0 +1,28 @@
+---
+# tasks file for roles/apache
+
+- include: version-support.yml
+  tags:
+   - apache-server
+   - apache-server-version-support
+
+- include: install.yml
+  tags:
+   - apache-server
+   - apache-server-install
+
+- include: configure.yml
+  tags:
+   - apache-server
+   - apache-server-configure
+
+- include: vhost.yml
+  tags:
+   - apache-server
+   - apache-server-vhost
+
+- include: state.yml
+  tags:
+   - apache-server
+   - apache-server-state
+   - always

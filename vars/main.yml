@@ -1,0 +1,20 @@
+---
+# vars file for roles/apache
+
+apache_server_role_os_family_supported:
+  - 'Debian'
+
+apache_server_versions_supported:
+  - '2.4'
+
+apache_server_dependencies:
+  - "apache2={{ apache_server_version }}*"
+
+apache_server_main_cnf: "{{ apache_server_cnf_path }}{{ apache_server_cnf_file }}"
+
+apache_server_disabled_vhosts: []
+
+apache_server_enabled_vhosts: []
+
+
+  

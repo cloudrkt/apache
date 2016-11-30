@@ -1,0 +1,28 @@
+---
+
+- name: install | dependencies
+  apt:
+    name: "{{ item }}"
+    state: "{{ apache_server_update_packages|default(installed) }}"
+  with_items: 
+    - "{{ apache_server_dependencies }}"
+  tags:
+    - apache-webserver-install-dependencies
+
+- name: install | modules
+  apt:
+    name: "{{ item }}"
+    state: "{{ apache_server_update_packages|default(installed) }}"
+  with_items:
+    - "{{ apache_server_modules }}"
+  tags:
+    - apache-webserver-install-modules
+
+- name: install | additional
+  apt:
+    name: "{{ item }}"
+    state: "{{ apache_server_update_packages|default(installed) }}"
+  with_items:
+    - "{{ apache_server_additional_packages }}"
+  tags:
+    - apache-webserver-install-additional
